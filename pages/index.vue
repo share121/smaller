@@ -23,18 +23,20 @@
           详情
         </button>
       </div>
-      <div :class="{ show: dir.showOutput }" class="dir-actions-output">
-        <div
-          v-for="output in dir.output.toReversed()"
-          :key="output.time.getTime()"
-          class="output-item"
-        >
-          <span class="output-time" :class="[output.type]">{{
-            output.time.toLocaleTimeString()
-          }}</span>
-          {{ output.message }}
+      <Transition name="dir-actions-output">
+        <div v-if="dir.showOutput" class="dir-actions-output">
+          <div
+            v-for="output in dir.output.toReversed()"
+            :key="output.time.getTime()"
+            class="output-item"
+          >
+            <span class="output-time" :class="[output.type]">{{
+              output.time.toLocaleTimeString()
+            }}</span>
+            {{ output.message }}
+          </div>
         </div>
-      </div>
+      </Transition>
     </div>
   </div>
   <div class="dir-batch-actions">
@@ -161,13 +163,11 @@ rid：${update.rid}`,
 }
 
 .dir-actions-output {
-  margin-top: 0;
-  padding: 0 12px;
+  margin-top: 8px;
+  padding: 12px;
+  height: 150px;
   border-radius: 8px;
-  height: 0;
-  transition: height 0.5s ease, padding-top 0.5s ease, padding-bottom 0.5s ease,
-    margin-top 0.5s ease;
-  overflow: hidden;
+  overflow: auto;
   background-color: #181818;
   font-family: "FiraCode Nerd Font", ui-monospace, "Menlo", "Monaco", "Consolas",
     "Liberation Mono", "Courier New", "HarmonyOS Sans SC", "Punctuation SC",
@@ -175,12 +175,20 @@ rid：${update.rid}`,
     Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
 }
-.dir-actions-output.show {
-  margin-top: 8px;
-  padding: 12px;
-  height: 150px;
-  overflow: auto;
+.dir-actions-output-enter-active,
+.dir-actions-output-leave-active {
+  transition: height 0.5s ease, padding-top 0.5s ease, padding-bottom 0.5s ease,
+    margin-top 0.5s ease;
 }
+.dir-actions-output-enter-from,
+.dir-actions-output-leave-to {
+  overflow: hidden;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 0;
+}
+
 .output-time {
   color: #b4b4b4;
 }

@@ -14,12 +14,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest" # 对于基于 Arm 的 Mac（M1 及以上）。
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # 对于基于 Intel 的 Mac。
-            args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04" # 对于 Tauri v1，你可以用 ubuntu-20.04 替换这个。
-            args: ""
+          # - platform: "macos-latest" # 对于基于 Arm 的 Mac（M1 及以上）。
+          #   args: "--target aarch64-apple-darwin"
+          # - platform: "macos-latest" # 对于基于 Intel 的 Mac。
+          #   args: "--target x86_64-apple-darwin"
+          # - platform: "ubuntu-22.04" # 对于 Tauri v1，你可以用 ubuntu-20.04 替换这个。
+          #   args: ""
           - platform: "windows-latest"
             args: "--target i686-pc-windows-msvc"
 

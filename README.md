@@ -1,75 +1,14 @@
-# Nuxt Minimal Starter
+# smaller
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/share121/smaller/master)
 
-## Setup
+## 简介
 
-Make sure to install dependencies:
+smaller 是一个基于 tauri 开发的跨平台文件夹压缩器，使用 ntfs 自带的压缩功能，实现了不用解压就能正常使用压缩文件的功能。
 
-```bash
-# npm
-npm install
+## 许可证
 
-# pnpm
-pnpm install
+Copyright (c) 2025 share121
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+根据 [MIT License](https://github.com/share121/blog/blob/master/LICENSE) 发布

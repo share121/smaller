@@ -1,0 +1,61 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "smaller",
+  "version": "0.1.0",
+  "identifier": "top.s121.smaller",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm generate"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "smaller",
+        "width": 400,
+        "height": 600,
+        "minWidth": 342,
+        "minHeight": 292,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "dragDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "createUpdaterArtifacts": true,
+    "icon": ["icons/icon.png", "icons/icon.ico"],
+    "license": "MIT",
+    "publisher": "share121",
+    "licenseFile": "../LICENSE",
+    "copyright": "Copyright (c) 2024 share121",
+    "homepage": "https://github.com/share121/smaller",
+    "category": "Utility",
+    "shortDescription": "压缩文件夹",
+    "longDescription": "使用 ntfs 压缩，对文件夹进行压缩",
+    "windows": {
+      "wix": {
+        "language": "zh-CN"
+      },
+      "nsis": {
+        "languages": ["SimpChinese"],
+        "installerIcon": "icons/icon.ico"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgzQTNGNjQ1NTkxOUVCNDUKUldSRjZ4bFpSZmFqZzhzbGZTWFVYMXFrNDdiZDBQMEk0UUJFcDByRk81UFlIZ2FhUGw5WTFjZzEK",
+      "endpoints": [
+        "https://github.com/share121/smaller/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}

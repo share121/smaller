@@ -1,0 +1,69 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest" # 对于基于 Arm 的 Mac（M1 及以上）。
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest" # 对于基于 Intel 的 Mac。
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04" # 对于 Tauri v1，你可以用 ubuntu-20.04 替换这个。
+            args: ""
+          - platform: "windows-latest"
+            args: "--target i686-pc-windows-msvc"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # 这些目标只在 macos 运行器上使用，所以放在 `if` 中以稍微加快 Windows 和 Linux 构建的速度。
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-latest' && 'i686-pc-windows-msvc' || '' }}
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: install frontend dependencies
+        run: pnpm install # 根据你使用的工具，将此更改为 npm、pnpm 或 bun。
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }} # 使用之前配置的私钥
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }} # 使用之前配置的私钥密码
+        with:
+          tagName: smaller-v__VERSION__ # 这个动作会自动将 \_\_VERSION\_\_ 替换为应用版本。
+          releaseName: "smaller v__VERSION__"
+          releaseBody: "修复了一些已知问题"
+          releaseDraft: true
+          prerelease: false
+          updaterJsonPreferNsis: true
+          args: ${{ matrix.args }}

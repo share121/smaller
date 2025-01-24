@@ -35,6 +35,16 @@ export const useMyDirStore = defineStore("myDirStore", () => {
     dirpath.forEach(addSingleDir);
   }
 
+  const outputLength = ref(100);
+
+  function addOutput(dir: Dir, output: OuputType) {
+    if (!output.message.trim().length) return;
+    dir.output.unshift(output);
+    if (dir.output.length > outputLength.value) {
+      dir.output.length = outputLength.value;
+    }
+  }
+
   async function removeDir(...dirpath: string[]) {
     async function removeSingleDir(dirpath: string) {
       const index = dirList.value.findIndex((d) => d.path === dirpath);
@@ -65,28 +75,28 @@ export const useMyDirStore = defineStore("myDirStore", () => {
       { encoding: "gbk", cwd: dir.path }
     );
     command.on("close", (data) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "success",
         message: `压缩执行完毕，代码为 ${data.code}，信号为 ${data.signal}`,
         time: new Date(),
       })
     );
     command.on("error", (error) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "error",
         message: `压缩错误：${error}`,
         time: new Date(),
       })
     );
     command.stdout.on("data", (line) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "info",
         message: line,
         time: new Date(),
       })
     );
     command.stderr.on("data", (line) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "info",
         message: line,
         time: new Date(),
@@ -95,7 +105,7 @@ export const useMyDirStore = defineStore("myDirStore", () => {
 
     const child = await command.spawn();
     dir.process = child;
-    dir.output.push({
+    addOutput(dir, {
       type: "info",
       message: `压缩进程 pid：${child.pid}`,
       time: new Date(),
@@ -117,28 +127,28 @@ export const useMyDirStore = defineStore("myDirStore", () => {
       cwd: dir.path,
     });
     command.on("close", (data) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "success",
         message: `解压执行完毕，代码为 ${data.code}，信号为 ${data.signal}`,
         time: new Date(),
       })
     );
     command.on("error", (error) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "error",
         message: `解压错误：${error}`,
         time: new Date(),
       })
     );
     command.stdout.on("data", (line) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "info",
         message: line,
         time: new Date(),
       })
     );
     command.stderr.on("data", (line) =>
-      dir.output.push({
+      addOutput(dir, {
         type: "info",
         message: line,
         time: new Date(),
@@ -147,7 +157,7 @@ export const useMyDirStore = defineStore("myDirStore", () => {
 
     const child = await command.spawn();
     dir.process = child;
-    dir.output.push({
+    addOutput(dir, {
       type: "info",
       message: `解压进程 pid：${child.pid}`,
       time: new Date(),

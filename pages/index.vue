@@ -26,7 +26,7 @@
       <Transition name="dir-actions-output">
         <div v-if="dir.showOutput" class="dir-actions-output">
           <div
-            v-for="output in dir.output.toReversed()"
+            v-for="output in dir.output"
             :key="output.time.getTime()"
             class="output-item"
           >
@@ -49,10 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import { ask, open } from "@tauri-apps/plugin-dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 import { useMyDirStore } from "~/stores/dir-store";
-import { check } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
 
 const myDirStore = useMyDirStore();
 
@@ -64,27 +62,6 @@ async function pickDirs() {
   if (!dirs) return;
   myDirStore.addDir(...dirs);
 }
-
-check().then(async (update) => {
-  if (update) {
-    const answer = await ask(
-      `${update.currentVersion} --> ${update.version}
-发布日期：${update.date}
-更新内容：${update.body ?? "修复了一些已知问题"}
-rid：${update.rid}`,
-      {
-        title: "检测到新版本",
-        kind: "warning",
-        cancelLabel: "取消",
-        okLabel: "更新",
-      }
-    );
-    if (answer) {
-      await update.downloadAndInstall();
-      await relaunch();
-    }
-  }
-});
 </script>
 
 <style>

@@ -5,9 +5,10 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "dialog:default",
-    "shell:default",
+    "dialog:allow-ask",
+    "dialog:allow-open",
     "shell:allow-kill",
+    "fs:allow-stat",
     {
       "identifier": "shell:allow-spawn",
       "allow": [

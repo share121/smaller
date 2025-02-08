@@ -46,13 +46,19 @@
     <button class="dir-btn" @click="myDirStore.hideOutputAll">收起</button>
     <button class="dir-btn" @click="myDirStore.showOutputAll">展开</button>
   </div>
+  <Transition name="fade">
+    <div class="drag-area" v-if="dragging">拖动到此处</div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
 import { open } from "@tauri-apps/plugin-dialog";
 import { useMyDirStore } from "~/stores/dir-store";
+import { getCurrentWebview } from "@tauri-apps/api/webview";
+import { stat } from "@tauri-apps/plugin-fs";
 
 const myDirStore = useMyDirStore();
+const dragging = ref(false);
 
 async function pickDirs() {
   const dirs = await open({
@@ -62,6 +68,21 @@ async function pickDirs() {
   if (!dirs) return;
   myDirStore.addDir(...dirs);
 }
+
+getCurrentWebview().listen("tauri://drag-drop", async (event) => {
+  dragging.value = false;
+  const paths = (event.payload as { paths: string[] }).paths;
+  for (const path of paths) {
+    const fileStat = await stat(path);
+    if (fileStat.isDirectory) myDirStore.addDir(path);
+  }
+});
+getCurrentWebview().listen("tauri://drag-enter", () => {
+  dragging.value = true;
+});
+getCurrentWebview().listen("tauri://drag-leave", () => {
+  dragging.value = false;
+});
 </script>
 
 <style>
@@ -185,5 +206,26 @@ async function pickDirs() {
 }
 .dir-batch-actions > .dir-btn {
   flex: 1;
+}
+
+.drag-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #1818189f;
+  z-index: 999;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
